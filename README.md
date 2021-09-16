@@ -6,7 +6,7 @@ To use the package add following line in your launch file under move\_base node 
 
 **NOTE: You are required to fill the `findPath` function in `template_planner_pkg/src/template_planner.cpp` without which the planner won't work. A helper code is provided comented inside the function body that can be used to test out the planner quickly before writing your own algorithm.**
 
-A simple configuration setup is provided in the `nav_stack` folder consisting of basic configuration and launch files.
+A simple configuration setup is provided in the `nav_stack` folder consisting of basic configuration and launch files. An rviz file is also provided to aid in saving some time which is usually rather wasted adding widgets.
 
 ### Quickstart
 
