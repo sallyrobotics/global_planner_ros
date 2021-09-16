@@ -4,7 +4,7 @@ To use the package add following line in your launch file under move\_base node 
 
 <param name="base_global_planner" value="template_planner_ns/template_planner"/>
 
-**NOTE: You are required to fill the `findPath` function in `template\_planner\_pkg/src/template\_planner.cpp` without which the planner won't work. A helper code is provided comented inside the function body that can be used to test out the planner quickly before writing your own algorithm.**
+**NOTE: You are required to fill the `findPath` function in `template_planner_pkg/src/template_planner.cpp` without which the planner won't work. A helper code is provided comented inside the function body that can be used to test out the planner quickly before writing your own algorithm.**
 
 ### Quickstart
 
