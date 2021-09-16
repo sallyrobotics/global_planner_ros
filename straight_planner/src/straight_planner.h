@@ -39,18 +39,18 @@
 using namespace std;
 using std::string;
 
-#ifndef TEMPLATE_ROS_CPP
-#define TEMPLATE_ROS_CPP
+#ifndef STRAIGHT_ROS_CPP
+#define STRAIGHT_ROS_CPP
 
 
-namespace template_planner_ns {
+namespace straight_planner_ns {
   
-class template_planner : public nav_core::BaseGlobalPlanner {
+class straight_planner : public nav_core::BaseGlobalPlanner {
 public:
   
-  template_planner (ros::NodeHandle &); //this constructor is may be not needed
-  template_planner ();
-  template_planner(std::string name, costmap_2d::Costmap2DROS* costmap_ros);
+  straight_planner (ros::NodeHandle &); //this constructor is may be not needed
+  straight_planner ();
+  straight_planner(std::string name, costmap_2d::Costmap2DROS* costmap_ros);
   
   ros::NodeHandle ROSNodeHandle;
   

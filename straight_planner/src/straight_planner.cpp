@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-#include "template_planner.h"
+#include "straight_planner.h"
 
 #include <pluginlib/class_list_macros.h>
 //register this planner as a BaseGlobalPlanner plugin
-PLUGINLIB_EXPORT_CLASS(template_planner_ns::template_planner, nav_core::BaseGlobalPlanner)
+PLUGINLIB_EXPORT_CLASS(straight_planner_ns::straight_planner, nav_core::BaseGlobalPlanner)
 
 
 int value;
@@ -14,26 +14,26 @@ bool* OGM;
 
 inline vector <int> findFreeNeighborCell (int CellID);
 
-namespace template_planner_ns
+namespace straight_planner_ns
 {
 
 //Default Constructor
-template_planner::template_planner()
+straight_planner::straight_planner()
 {
 
 }
-template_planner::template_planner(ros::NodeHandle &nh)
+straight_planner::straight_planner(ros::NodeHandle &nh)
 {
   ROSNodeHandle = nh;
 
 }
 
-template_planner::template_planner(std::string name, costmap_2d::Costmap2DROS* costmap_ros)
+straight_planner::straight_planner(std::string name, costmap_2d::Costmap2DROS* costmap_ros)
 {
   initialize(name, costmap_ros);
 }
 
-void template_planner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros)
+void straight_planner::initialize(std::string name, costmap_2d::Costmap2DROS* costmap_ros)
 {
 
   if (!initialized_)
@@ -77,7 +77,7 @@ void template_planner::initialize(std::string name, costmap_2d::Costmap2DROS* co
     ROS_WARN("This planner has already been initialized... doing nothing");
 }
 
-bool template_planner::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
+bool straight_planner::makePlan(const geometry_msgs::PoseStamped& start, const geometry_msgs::PoseStamped& goal,
                              std::vector<geometry_msgs::PoseStamped>& plan)
 {
 
@@ -209,7 +209,7 @@ bool template_planner::makePlan(const geometry_msgs::PoseStamped& start, const g
   }
 
 }
-void template_planner::getCorrdinate(float& x, float& y)
+void straight_planner::getCorrdinate(float& x, float& y)
 {
 
   x = x - originX;
@@ -217,7 +217,7 @@ void template_planner::getCorrdinate(float& x, float& y)
 
 }
 
-int template_planner::convertToCellIndex(float x, float y)
+int straight_planner::convertToCellIndex(float x, float y)
 {
 
   int cellIndex;
@@ -230,7 +230,7 @@ int template_planner::convertToCellIndex(float x, float y)
   return cellIndex;
 }
 
-void template_planner::convertToCoordinate(int index, float& x, float& y)
+void straight_planner::convertToCoordinate(int index, float& x, float& y)
 {
 
   x = getCellColID(index) * resolution;
@@ -242,7 +242,7 @@ void template_planner::convertToCoordinate(int index, float& x, float& y)
 
 }
 
-bool template_planner::isCellInsideMap(float x, float y)
+bool straight_planner::isCellInsideMap(float x, float y)
 {
   bool valid = true;
 
@@ -252,13 +252,13 @@ bool template_planner::isCellInsideMap(float x, float y)
   return valid;
 }
 
-void template_planner::mapToWorld(double mx, double my, double& wx, double& wy){
+void straight_planner::mapToWorld(double mx, double my, double& wx, double& wy){
    costmap_2d::Costmap2D* costmap = costmap_ros_->getCostmap();
     wx = costmap->getOriginX() + mx * resolution;
     wy = costmap->getOriginY() + my * resolution;
 }
 
-vector<int> template_planner::planner_func(int startCell, int goalCell){
+vector<int> straight_planner::planner_func(int startCell, int goalCell){
 
    vector<int> bestPath;
 
@@ -275,102 +275,98 @@ cout<<endl<<"MapSize is: "<<mapSize<<endl;
 
 
 /*******************************************************************************/
-//Function Name: findPath | Uncomment template algorithm to see working of this planner. Please write your algorithm inside this function.
+//Function Name: findPath
 //Inputs: Start and goal cells in form of row-major index of single dimentional 1xwidth*height array, width and height of the grid.
 //Output: the best path
 //Description: it is used to generate the robot free path
 /*********************************************************************************/
-vector<int> template_planner::findPath(int startCell, int goalCell, int width, int height)
-{  
+vector<int> straight_planner::findPath(int startCell, int goalCell, int width, int height)
+{
+	cout<<endl<<"Width & Height of the map: "<<width<<" "<<height<<endl;
+	int start_x = getCellRowID(startCell);
+	int start_y = getCellColID(startCell);
+	int goal_x = getCellRowID(goalCell);
+	int goal_y = getCellColID(goalCell);
+	vector <int> bestPath;
+	bestPath.push_back(startCell);
+	int iterator = 0;
+	float dx = goal_x - start_x;
+	float dy = goal_y - start_y;
+	float abs_dx = dx;
+	float abs_dy = dy;
+	(abs_dx<0)?(abs_dx = -1*abs_dx):(abs_dx = abs_dx);
+	(abs_dy<0)?(abs_dy = -1*abs_dy):(abs_dy = abs_dy);
+	int x = start_x;
+	int y = start_y;
+	float x_est;
+	float y_est;
+	while ((x != goal_x) && (y != goal_y))
+	{
+		if(abs_dx > abs_dy)
+		{
+			if ((goal_x > start_x) && (goal_y > start_y))
+			{
+				x+=1;
+				y_est = start_y + (dy/dx)*(x - start_x);
+				((y_est - y)>(y+1 - y_est)) ? (y = y+1) : (y = y);
+				bestPath.push_back(getCellIndex(x, y));
+			}
+			else if ((goal_x > start_x) && (goal_y <= start_y))
+			{
+				x+=1;
+				y_est = start_y + dy/dx*(x - start_x);
+				((y - y_est) > (y_est - y-1)) ? (y = y-1) : (y = y);
+				bestPath.push_back(getCellIndex(x, y));
+			}
+			else if ((goal_x <= start_x) && (goal_y > start_y))
+			{
+				x-=1;
+				y_est = start_y + dy/dx*(x - start_x);
+				((y_est - y)>(y+1 - y_est)) ? (y = y+1) : (y = y);
+				bestPath.push_back(getCellIndex(x, y));
+			}
+			else if ((goal_x <= start_x) && (goal_y <= start_y))
+			{
+				x-=1;
+				y_est = start_y + dy/dx*(x - start_x);
+				((y - y_est) > (y_est - y-1)) ? (y = y-1) : (y = y);
+				bestPath.push_back(getCellIndex(x, y));
+			}
 
-// Uncomment template algorithm to see working of this planner. Please write your algorithm here.
-
-
-//	cout << "Start cell: " << startCell << " (" << getCellRowID(startCell) <<", " << getCellColID(startCell) <<")"<< ", Goal cell: " << goalCell << " (" << getCellRowID(goalCell) <<", " << getCellColID(goalCell) <<")"<< endl;
-//	int start_x = getCellRowID(startCell);
-//	int start_y = getCellColID(startCell);
-//	int goal_x = getCellRowID(goalCell);
-//	int goal_y = getCellColID(goalCell);
-//	vector <int> bestPath;
-//	bestPath.push_back(startCell);
-//	int iterator = 0;
-//	float dx = goal_x - start_x;
-//	float dy = goal_y - start_y;
-//	float abs_dx = dx;
-//	float abs_dy = dy;
-//	(abs_dx<0)?(abs_dx = -1*abs_dx):(abs_dx = abs_dx);
-//	(abs_dy<0)?(abs_dy = -1*abs_dy):(abs_dy = abs_dy);
-//	int x = start_x;
-//	int y = start_y;
-//	float x_est;
-//	float y_est;
-//	while ((x != goal_x) && (y != goal_y))
-//	{
-//		if(abs_dx > abs_dy)
-//		{
-//			if ((goal_x > start_x) && (goal_y > start_y))
-//			{
-//				x+=1;
-//				y_est = start_y + (dy/dx)*(x - start_x);
-//				((y_est - y)>(y+1 - y_est)) ? (y = y+1) : (y = y);
-//				bestPath.push_back(getCellIndex(x, y));
-//			}
-//			else if ((goal_x > start_x) && (goal_y <= start_y))
-//			{
-//				x+=1;
-//				y_est = start_y + dy/dx*(x - start_x);
-//				((y - y_est) > (y_est - y-1)) ? (y = y-1) : (y = y);
-//				bestPath.push_back(getCellIndex(x, y));
-//			}
-//			else if ((goal_x <= start_x) && (goal_y > start_y))
-//			{
-//				x-=1;
-//				y_est = start_y + dy/dx*(x - start_x);
-//				((y_est - y)>(y+1 - y_est)) ? (y = y+1) : (y = y);
-//				bestPath.push_back(getCellIndex(x, y));
-//			}
-//			else if ((goal_x <= start_x) && (goal_y <= start_y))
-//			{
-//				x-=1;
-//				y_est = start_y + dy/dx*(x - start_x);
-//				((y - y_est) > (y_est - y-1)) ? (y = y-1) : (y = y);
-//				bestPath.push_back(getCellIndex(x, y));
-//			}
-//
-//		}
-//		else
-//		{
-//			if ((goal_x > start_x) && (goal_y > start_y))
-//			{
-//				y+=1;
-//				x_est = start_x + (dx/dy)*(y - start_y);
-//				((x_est - x)>(x+1 - x_est)) ? (x = x+1) : (x = x);
-//				bestPath.push_back(getCellIndex(x, y));
-//			}
-//			else if ((goal_x > start_x) && (goal_y <= start_y))
-//			{
-//				y+=1;
-//				x_est = start_x + (dx/dy)*(y - start_y);
-//				((x_est - x)>(x+1 - x_est)) ? (x = x+1) : (x = x);
-//				bestPath.push_back(getCellIndex(x, y));
-//			}
-//			else if ((goal_x <= start_x) && (goal_y > start_y))
-//			{
-//				y-=1;
-//				x_est = start_x + (dx/dy)*(y - start_y);
-//				((x - x_est)>(x_est - x-1)) ? (x = x-1) : (x = x);
-//				bestPath.push_back(getCellIndex(x, y));
-//			}
-//			else if ((goal_x <= start_x) && (goal_y <= start_y))
-//			{
-//				y-=1;
-//				x_est = start_x + (dx/dy)*(y - start_y);
-//				((x - x_est)>(x_est - x-1)) ? (x = x-1) : (x = x);
-//				bestPath.push_back(getCellIndex(x, y));
-//			}
-//		}
-//	}
-//	return bestPath;
+		}
+		else
+		{
+			if ((goal_x > start_x) && (goal_y > start_y))
+			{
+				y+=1;
+				x_est = start_x + (dx/dy)*(y - start_y);
+				((x_est - x)>(x+1 - x_est)) ? (x = x+1) : (x = x);
+				bestPath.push_back(getCellIndex(x, y));
+			}
+			else if ((goal_x > start_x) && (goal_y <= start_y))
+			{
+				y+=1;
+				x_est = start_x + (dx/dy)*(y - start_y);
+				((x_est - x)>(x+1 - x_est)) ? (x = x+1) : (x = x);
+				bestPath.push_back(getCellIndex(x, y));
+			}
+			else if ((goal_x <= start_x) && (goal_y > start_y))
+			{
+				y-=1;
+				x_est = start_x + (dx/dy)*(y - start_y);
+				((x - x_est)>(x_est - x-1)) ? (x = x-1) : (x = x);
+				bestPath.push_back(getCellIndex(x, y));
+			}
+			else if ((goal_x <= start_x) && (goal_y <= start_y))
+			{
+				y-=1;
+				x_est = start_x + (dx/dy)*(y - start_y);
+				((x - x_est)>(x_est - x-1)) ? (x = x-1) : (x = x);
+				bestPath.push_back(getCellIndex(x, y));
+			}
+		}
+	}
+	return bestPath;
 }
 
 
@@ -382,7 +378,7 @@ vector<int> template_planner::findPath(int startCell, int goalCell, int width, i
  * Check Status: Checked by Anis, Imen and Sahar
 *********************************************************************************/
 
-vector <int> template_planner::findFreeNeighborCell (int CellID){
+vector <int> straight_planner::findFreeNeighborCell (int CellID){
  
   int rowID=getCellRowID(CellID);
   int colID=getCellColID(CellID);
@@ -408,7 +404,7 @@ vector <int> template_planner::findFreeNeighborCell (int CellID){
 //Output: true if the start and the goal cells are valid
 //Description: check if the start and goal cells are valid
 /*********************************************************************************/
-bool template_planner::isStartAndGoalCellsValid(int startCell,int goalCell)
+bool straight_planner::isStartAndGoalCellsValid(int startCell,int goalCell)
 { 
  bool isvalid=true;
  bool isFreeStartCell=isFree(startCell);
@@ -463,14 +459,14 @@ bool template_planner::isStartAndGoalCellsValid(int startCell,int goalCell)
 
 
  //verify if the cell(i,j) is free
- bool  template_planner::isFree(int i, int j){
+ bool  straight_planner::isFree(int i, int j){
    int CellID = getCellIndex(i, j);
  return OGM[CellID];
 
  } 
 
   //verify if the cell(i,j) is free
- bool  template_planner::isFree(int CellID){
+ bool  straight_planner::isFree(int CellID){
  return OGM[CellID];
  } 
 }
