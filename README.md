@@ -14,7 +14,9 @@ A simple configuration setup is provided in the `nav_stack` folder consisting of
 
 2. Go to your workspace and do `catkin_make`.
 
-3. Planner should be available as a plugin to `nav_core::BaseGlobalPlanner` now. Try launching `roslaunch nav_stack move_base.launch` with turtlebot3\_house or turtlebot3\_world.
+3. Source your workspace using `source <your_workspace>/devel/setup.bash`.
+
+4. Planner should be available as a plugin to `nav_core::BaseGlobalPlanner` now. Try launching `roslaunch nav_stack move_base.launch` with turtlebot3\_house or turtlebot3\_world.
 
 To customize, put in your own algorithm inside the `findPath` function in `template_planner_pkg/src/template_planner.cpp`.
 
