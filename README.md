@@ -8,6 +8,8 @@ To use the package add following line in your launch file under move\_base node 
 
 A simple configuration setup is provided in the `nav_stack` folder consisting of basic configuration and launch files. An rviz file is also provided to aid in saving some time which is usually rather wasted adding widgets.
 
+[Implementation video](https://youtu.be/PxI2eISoebc)
+
 ### Quickstart
 
 1. Go to `template_planner_pkg/src/template_planner.cpp` and uncomment contents of `findPath()` function.
