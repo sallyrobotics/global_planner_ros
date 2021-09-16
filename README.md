@@ -6,6 +6,8 @@ To use the package add following line in your launch file under move\_base node 
 
 **NOTE: You are required to fill the `findPath` function in `template_planner_pkg/src/template_planner.cpp` without which the planner won't work. A helper code is provided comented inside the function body that can be used to test out the planner quickly before writing your own algorithm.**
 
+A simple configuration setup is provided in the `nav_stack` folder consisting of basic configuration and launch files.
+
 ### Quickstart
 
 1. Go to `template_planner_pkg/src/template_planner.cpp` and uncomment contents of `findPath()` function.
@@ -33,8 +35,6 @@ Inputs to this function are:
 4. height: Integer value representing number of rows in the grid.
 
 Return value must be a vector of integers representing index values of cells which are part of the path, first element of vector being start cell's index and last element being goal cell's index.
-
-A simple configuration setup is provided in the `nav_stack` folder consisting of basic configuration and launch files.
 
 ### Branches
 
