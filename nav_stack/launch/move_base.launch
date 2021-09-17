@@ -3,7 +3,7 @@
 <!-- Run the map server -->
 <node name="map_server" pkg="map_server" type="map_server" args="$(find nav_stack)/map_house.yaml"/>
 <!-- Run AMCL -->
-<include file="$(find amcl)/examples/amcl_omni.launch" />
+<include file="$(find nav_stack)/launch/amcl.launch" />
 <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
 <param name="base_global_planner" value="straight_planner_ns/straight_planner"/>
 <rosparam file="$(find nav_stack)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
