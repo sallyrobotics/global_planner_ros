@@ -6,6 +6,8 @@ To use the package add following line in your launch file under move\_base node 
 
 A simple configuration setup is provided in the `nav_stack` folder consisting of basic configuration and launch files. An rviz file is also provided to aid in saving some time which is usually rather wasted adding widgets.
 
+[![image](https://user-images.githubusercontent.com/52484751/133746124-a727780a-6c97-4e25-ab06-2ea9d9a38318.png)](https://youtu.be/PxI2eISoebc)
+
 ### Quickstart
 
 1. Go to your workspace and do `catkin_make`.
