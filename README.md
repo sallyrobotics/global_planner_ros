@@ -45,3 +45,5 @@ Return value must be a vector of integers representing index values of cells whi
 1. `master`: Empty template code that can be customized.
 
 2. `Straight-line`: Straight line planner.
+
+3. [`more_planners`: More planners on my personal repo](https://www.youtube.com/watch?v=iR1ry73AiR0).
