@@ -1,0 +1,3 @@
+[submodule "nav_stack"]
+	path = nav_stack
+	url = https://github.com/Kanishk598/nav_stack.git
