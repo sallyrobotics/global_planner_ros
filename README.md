@@ -8,7 +8,7 @@ To use the package add following line in your launch file under move\_base node 
 
 A simple configuration setup is provided in the `nav_stack` folder consisting of basic configuration and launch files. An rviz file is also provided to aid in saving some time which is usually rather wasted adding widgets.
 
-[![image](https://user-images.githubusercontent.com/52484751/133745986-12fb2727-6bfd-4140-af63-f3c9f9d95caa.png)](https://youtu.be/PxI2eISoebc)
+[![image](https://user-images.githubusercontent.com/52484751/133745986-12fb2727-6bfd-4140-af63-f3c9f9d95caa.png)](https://youtu.be/iR1ry73AiR0)
 
 ### Quickstart
 
